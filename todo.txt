@@ -1,0 +1,1 @@
+#arreglar que cuando dice mantener sigue sacando cartas PERO NO las guarda

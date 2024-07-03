@@ -1,0 +1,10 @@
+:root {
+    color-scheme: dark;
+}
+body {
+    background-color: Canvas;
+    color: CanvasText;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}

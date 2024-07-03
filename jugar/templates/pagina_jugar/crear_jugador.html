@@ -1,0 +1,12 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Crear jugador{% endblock %}
+{% block main %}
+<h1>Crear jugador</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{form}}
+    <button>
+        Crear
+    </button>
+</form>
+{% endblock%}

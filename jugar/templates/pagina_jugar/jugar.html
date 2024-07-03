@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Jugar{% endblock%}
+{% block main %}
+<h1>Jugar</h1>
+{% if puntaje <= 21 %}
+    <p>El repartidor tiene: {{ repartidor }} con un total puntaje de: {{ puntaje_repartidor }}</p>
+    <p>Don {{ nombre }}, tienes: {{ jugador }} || tienes un total de {{ puntaje }}</p>
+    <form method="POST" action="{% url 'jugar' nombre %}">
+        {% csrf_token %}
+        <button type="submit" name="accion" value="pedir">Pedir</button>
+        <button type="submit" name="accion" value="mantener">Mantener</button>
+    </form>
+{% else %}
+    <p>Perdio usted tiene {{ puntaje }}</p>
+    <p>El dealer tenia {{ repartidor }}</p>
+    <form method="POST" action="{% url 'jugar' nombre %}">
+        {% csrf_token %}
+        <button type="submit" name="accion" value="volver_jugar">Jugar de nuevo</button>
+    </form>
+    
+{% endif %}
+
+{% endblock%}
