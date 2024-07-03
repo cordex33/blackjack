@@ -1,1 +1,3 @@
-#arreglar que cuando dice mantener sigue sacando cartas PERO NO las guarda
+# 1. Arreglar las funciones
+# 2. Arreglar bien la funcion de jugar en la que si es A debería valer por 10 o 1
+# 3. Si el jugador tiene 21, avisar q tiene 21 y hacer que el repartidor siga sacando cartas

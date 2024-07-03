@@ -22,78 +22,80 @@ def crear_jugador(request):
 
 #Página jugar que recibe un parametro, lo recibe de (crear_jugador)
 def jugar(request, nombre):
-    jugador = random.choice(cartas)
-    repartidor = random.choice(cartas)
+    g = Repartidor.objects.get(id=1)
+    g.carta = '0'
+    g.puntaje = '0'
+    g.save()
 
-    #condición en caso que sea letra para cambiarlo a 10
-    #-->falta que la 'A' cambie entre '1' y '10' dependiendo de la jugada.a
+    r = Jugador.objects.get(nombre=nombre)
+    r.puntaje = '0'
+    r.carta = '0'
+    r.save()
     
-    if request.method == 'GET':
+    if request.method == 'GET' or request.POST.get('accion') == 'volver_jugar':
+
+        repartidor = random.choice(cartas)
+        jugador = random.choice(cartas)
+        # Condición de repartidor
+        if repartidor in ['J', 'Q', 'K', 'A']:
+            guardar_repartidor = Repartidor.objects.get(nombre='XabalDelOcho')
+            guardar_repartidor.carta = 10
+            guardar_repartidor.puntaje = guardar_repartidor.carta + guardar_repartidor.puntaje
+            guardar_repartidor.save()
+        else:
+            guardar_repartidor = Repartidor.objects.get(nombre='XabalDelOcho')
+            #Guarda en la instancia .carta el valor de jugador (en letra)
+            guardar_repartidor.carta = int(repartidor)
+            guardar_repartidor.puntaje = guardar_repartidor.carta + guardar_repartidor.puntaje 
+            guardar_repartidor.save()
+
+        # Condición de jugar
         if jugador in ['J', 'Q', 'K', 'A']:
             nueva_carta = Jugador.objects.get(nombre=nombre)
-            nueva_carta.carta = int('10')
-            #Guarda en el value 'puntaje' la carta anterior más la actual
+            #Guarda en la instancia .carta el valor de jugador (en número)
+            nueva_carta.carta = 10
             nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje 
             nueva_carta.save()
-            
+        
         else:
             nueva_carta = Jugador.objects.get(nombre=nombre)
+            #Guarda en la instancia .carta el valor de jugador (en letra)
             nueva_carta.carta = int(jugador)
-            #Guarda en el value 'puntaje' la carta anterior más la actual
-            nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje
+            nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje 
             nueva_carta.save()
-    
-    #Detecta los botones de acción 'pedir' y 'mantener'
-    elif request.method == 'POST':
-        accion = request.POST.get('accion')
-        if accion == 'pedir':
-            if jugador in ['J', 'Q', 'K', 'A']:
-                nueva_carta = Jugador.objects.get(nombre=nombre)
-                nueva_carta.carta = int('10')
-                #Guarda en el value 'puntaje' la carta anterior más la actual
-                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje 
-                nueva_carta.save()
-            else:
-                nueva_carta = Jugador.objects.get(nombre=nombre)
-                nueva_carta.carta = int(jugador)
-                #Guarda en el value 'puntaje' la carta anterior más la actual
-                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje
-                nueva_carta.save()
-        
-        elif accion == 'volver_jugar':
-            nueva_carta = Jugador.objects.get(nombre=nombre)
-            nueva_carta.carta = int('0')
-            nueva_carta.puntaje = 0
-            nueva_carta.save()
-
-        elif accion == 'mantener':
-            print("entro a mantener")
-            #Obtenemos el nombre del repartidor
-            nueva_carta_repartidor = Repartidor.objects.get(nombre='XabalDelOcho')
-            #mientras sea abajo un número debajo del 17 se seguiran sacando cartas
-            while nueva_carta_repartidor.puntaje < 17:
-                
-                print("entro al while")
-                if repartidor in ['J', 'Q', 'K', 'A']:
-                    nueva_carta_repartidor.carta = int('10')
-                    
-                    nueva_carta_repartidor.puntaje = nueva_carta_repartidor.carta + nueva_carta_repartidor.puntaje
-                    nueva_carta_repartidor.save()
-                else:
-                    nueva_carta_repartidor.carta = int(repartidor)
-                    nueva_carta_repartidor.puntaje = nueva_carta_repartidor.carta + nueva_carta_repartidor.puntaje
-                    nueva_carta_repartidor.save()
-
 
     return render(request, 'pagina_jugar/jugar.html', {
         'nombre': nombre,
-        'jugador': int(Jugador.objects.get(nombre=nombre).carta),
+        'carta_jugador': Jugador.objects.get(nombre=nombre).carta,
+        'total_jugador': Jugador.objects.get(nombre=nombre).puntaje,
         'repartidor': repartidor,
-        'puntaje': Jugador.objects.get(nombre=nombre).puntaje,
-        'puntaje_repartidor': Repartidor.objects.get(nombre="XabalDelOcho").puntaje
     })
 
-#Recibe si el jugador pide o mantiene sus cartas
+def pedir(request, nombre):
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'pedir':
 
+            jugador = random.choice(cartas)
+            if jugador in ['J', 'Q', 'K', 'A']:
+                nueva_carta = Jugador.objects.get(nombre=nombre)
+                #Guarda en la instancia .carta el valor de jugador (en número)
+                nueva_carta.carta = 10
+                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje 
+                nueva_carta.save()
+
+            else:
+                nueva_carta = Jugador.objects.get(nombre=nombre)
+                #Guarda en la instancia .carta el valor de jugador (en letra)
+                nueva_carta.carta = int(jugador)
+                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje 
+                nueva_carta.save()
+    
+    return render(request, 'pagina_jugar/jugar.html', {
+        'nombre': nombre,
+        'carta_jugador': Jugador.objects.get(nombre=nombre).carta,
+        'total_jugador': Jugador.objects.get(nombre=nombre).puntaje,
+        'repartidor': Repartidor.objects.get(id=1).carta
+    })
 
 
