@@ -3,7 +3,7 @@
 {% block main %}
 <h1>Jugar</h1>
 {% if total_jugador < 22 %}
-    <p>El repartidor tiene: {{ repartidor }} con un total puntaje de: {{ repartidor }}</p>
+    <p>El repartidor tiene: {{ repartidor }} con un total puntaje de: {{ total_repartidor }}</p>
     <p>Don {{ nombre }}, tienes: {{ carta_jugador }} || tienes un total de {{ total_jugador }}</p>
     <form method="POST" action="{% url 'pedir' nombre %}">
         {% csrf_token %}

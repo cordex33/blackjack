@@ -68,7 +68,8 @@ def jugar(request, nombre):
         'nombre': nombre,
         'carta_jugador': Jugador.objects.get(nombre=nombre).carta,
         'total_jugador': Jugador.objects.get(nombre=nombre).puntaje,
-        'repartidor': repartidor,
+        'repartidor': Repartidor.objects.get(id=1).carta,
+        'total_repartidor': Repartidor.objects.get(id=1).puntaje,
     })
 
 def pedir(request, nombre):
@@ -95,7 +96,35 @@ def pedir(request, nombre):
         'nombre': nombre,
         'carta_jugador': Jugador.objects.get(nombre=nombre).carta,
         'total_jugador': Jugador.objects.get(nombre=nombre).puntaje,
-        'repartidor': Repartidor.objects.get(id=1).carta
+        'repartidor': Repartidor.objects.get(id=1).carta,
+        'total_repartidor': Repartidor.objects.get(id=1).puntaje,
     })
 
+def mantener(request, nombre):
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'mantener':
+            repartidor = random.choice(cartas)
+
+            if repartidor in ['J', 'Q', 'K', 'A']:
+                nueva_carta = Repartidor.objects.get(id=1)
+                nueva_carta.carta = 10
+                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje
+                nueva_carta.save()
+            
+            else:
+                nueva_carta = Repartidor.objects.get(id=1)
+                nueva_carta.carta = int(repartidor)
+                nueva_carta.puntaje = nueva_carta.carta + nueva_carta.puntaje
+                nueva_carta.save()
+    
+    return render(request, 'pagina_jugar/jugar.html', {
+        'nombre': nombre,
+        'carta_jugador': Jugador.objects.get(nombre=nombre).carta,
+        'total_jugador': Jugador.objects.get(nombre=nombre).puntaje,
+        'repartidor': Repartidor.objects.get(id=1).carta,
+        'total_repartidor': Repartidor.objects.get(id=1).puntaje,
+
+    })
+                
 
